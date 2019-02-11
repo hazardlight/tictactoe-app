@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck} from '@angular/core';
 import {GameService} from './game.service';
 // import {FormsModule} from '@angular/forms';
 
@@ -7,7 +7,7 @@ import {GameService} from './game.service';
   templateUrl: './gameboard.component.html',
   styleUrls: ['./gameboard.component.css']
 })
-export class GameboardComponent implements OnInit {
+export class GameboardComponent implements OnInit, DoCheck {
 
   playerOneToken: string;
   playerTwoToken: string;
@@ -18,6 +18,8 @@ export class GameboardComponent implements OnInit {
 
   changeTile: boolean = false;
 
+  warning: boolean = false;
+
   constructor(private gameService: GameService) { }
 
   ngOnInit() {
@@ -27,6 +29,7 @@ export class GameboardComponent implements OnInit {
   startGame(){
     this.gameService.initTurn();
     this.playing = true;
+    // this.checkPlayerTokens();
   }
   restartGame(){
     this.gameBoard = [...this.gameService.initGame()];
@@ -35,6 +38,7 @@ export class GameboardComponent implements OnInit {
     this.playerOneToken = "";
     this.playerTwoToken = "";
     this.playing = false;
+    this.warning = false;
   }
   replayGame(){
     this.gameBoard = [...this.gameService.resetGameBoard()];
@@ -54,8 +58,8 @@ export class GameboardComponent implements OnInit {
     }
 
     if(change && this.playing){
-      console.log(change);
-      console.log(index);
+      // console.log(change);
+      // console.log(index);
       if (this.gameService.getTurn()==="player1" && this.gameService.updateBoard()[index]==='*') {
           tempGameBoard[index]=this.playerOneToken;
           this.gameBoard = [...tempGameBoard];
@@ -66,9 +70,21 @@ export class GameboardComponent implements OnInit {
       }
     }
     if(!change && this.playing){
-      console.log(change);
-      console.log(index);
+      // console.log(change);
+      // console.log(index);
       this.gameBoard = [...this.gameService.updateBoard()];
     }
+  }
+  checkPlayerTokens(){
+    if(this.playerOneToken === this.playerTwoToken ){
+      this.warning = true;
+    }
+    else {
+      this.warning = false;
+    }
+  }
+  ngDoCheck(){
+    if(this.playerOneToken && this.playerTwoToken)
+      this.checkPlayerTokens();
   }
 }

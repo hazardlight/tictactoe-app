@@ -1,6 +1,5 @@
-<h1 class="title" >Tic Tac Toe</h1>
-
-<div class="gameContainer" >
+<div class="game-container" >
+  <h1 class="game-title" >Tic Tac Toe</h1>
   <div class="score-banner">
     <div>Score</div>
     <span>Player 1: {{gameService.getScore().player1}}</span>
@@ -13,40 +12,35 @@
     <h1 *ngIf="playing && gameService.getGameOutcome().condition === 'win'">{{gameService.getGameOutcome().player}} Wins!</h1>
     <h1 *ngIf="playing && gameService.getGameOutcome().condition === 'tie'">Tie!</h1>
     <h1 *ngIf="playing && gameService.getTurn() && !gameService.getGameOutcome().condition">{{gameService.getTurn()}}'s Turn</h1>
-    <h1 *ngIf="!playing">Enter Your Tokens!</h1>
-  </div>
-  <div class="game-board-container" (mouseleave)="placeTokenPreview(i,false)">
-    <div class="game-board-tile" *ngFor="let tile of gameBoard; let i = index" (click)="!gameService.getGameOutcome().condition && placeToken(i, this.playerOneToken, this.playerTwoToken)" (mouseenter)="placeTokenPreview(i,true)">
-        <div class="game-board-symbol" *ngIf="tile!='*'">{{tile}}</div>
-        <!-- <div class="game-board-symbol">{{tile}}</div> -->
-    </div>
+    <h1 *ngIf="!playing && !warning">Enter Your Tokens!</h1>
+    <h1 class="warning" *ngIf="!playing && warning">Please choose a different token!</h1>
   </div>
   <div class="control-container">
+    <div class="player-inputs">
       <span>Player 1 </span><input [disabled]="playing" type="text" size="1" maxlength="1" [(ngModel)]="this.playerOneToken">
       <span class="spacer"></span>
       <span>Player 2 </span><input [disabled]="playing" type="text" size="1" maxlength="1" [(ngModel)]="this.playerTwoToken">
+    </div>
     <div class="button-container">
-      <button
-        [disabled]="!playerOneToken || !playerTwoToken"
-        (click)=this.startGame()
-        *ngIf="!playing">
-          Start
-      </button>
-      <button
-        (click)="restartGame()"
-        *ngIf="playing && gameService.getGameOutcome().condition ===''">
-          Restart
-      </button>
-      <button
-        (click)="replayGame()"
-        *ngIf="playing && gameService.getGameOutcome().condition !== ''">
-          Replay
-      </button>
-      <button
-        (click)="restartGame()"
-        *ngIf="playing && gameService.getGameOutcome().condition !== ''">
-          End
-      </button>
+      <button class="button" [disabled]="!playerOneToken || !playerTwoToken || warning" (click)=this.startGame() *ngIf="!playing">Start</button>
+      <div class="button" (click)="restartGame()" *ngIf="playing && gameService.getGameOutcome().condition ===''">Restart</div>
+      <div class="button" (click)="replayGame()" *ngIf="playing && gameService.getGameOutcome().condition !== ''">Replay</div>
+      <div class="button" (click)="restartGame()" *ngIf="playing && gameService.getGameOutcome().condition !== ''">End</div>
+    </div>
+  </div>
+  <div class="game-board-container" (mouseleave)="placeTokenPreview(i,false)">
+    <div
+        class="game-board-tile"
+        *ngFor="let tile of gameBoard; let i = index"
+        (click)="!gameService.getGameOutcome().condition && placeToken(i, this.playerOneToken, this.playerTwoToken)"
+        (mouseenter)="placeTokenPreview(i,true)">
+
+        <div class="game-board-symbol" *ngIf="tile!='*'">
+          {{tile}}
+
+        </div>
+        <!-- <div class="game-board-symbol" >{{tile}}</div> -->
+
     </div>
   </div>
 </div>
